@@ -1,7 +1,7 @@
-﻿using System;
-using PointOfSaleTerminal.DataModels;
+﻿using PointOfSaleTerminal.DataModels;
 using PointOfSaleTerminal.Interfaces;
 using PointOfSaleTerminal.Loaders;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -11,26 +11,28 @@ namespace PointOfSaleTerminal
 {
     public class Terminal : ITerminal
     {
-        private DiscountCard dCard;
+        private double totalSumDiscountCard;
+        private double sumPurchase = 0;
+        ICardLoader cardsLoader;
 
         internal Dictionary<string, int> order = new Dictionary<string, int>();
-        private Dictionary<string, Product> products = new Dictionary<string, Product>();
+        Products products;
 
         public void SetPricing(string source)
         {
-            var productsLoader = new ProductLoaderFromJson();
-            products = productsLoader.LoadProducts(source);
+            products = new Products(source);
         }
 
-        public void VerifyDiscountCard(double _)
+        public void ScanDiscountCard(string cardId)
         {
-            dCard = new DiscountCard(_);
-            //dCard = new DiscountCard() { 546, 3 };
+            cardsLoader = new MockCardsLoader();
+            //cardsLoader = new CardLoaderFromJson();
+            totalSumDiscountCard = cardsLoader.GetCard(cardId);
         }
 
-        public void Scan(string item)
+        public void Scan(string item)           // public double Scan(string item)  - return in CalculateTotal
         {
-            if (products.ContainsKey(item))
+            if (products.GetProduct(item, out _))
             {
                 if (order.ContainsKey(item))
                 {
@@ -49,33 +51,35 @@ namespace PointOfSaleTerminal
 
         public double CalculateTotal()
         {
-            double result = 0;
-            double resultWithoutDiscounts = 0;
+            int discountPercent = new DiscountRanges().GetDiscount(totalSumDiscountCard);
+            double costingUsingDiscount = 0;
+
+            double costingPurchase = 0;
             foreach (var item in order)
             {
-                if (products.TryGetValue(item.Key, out var product))
+                if (products.GetProduct(item.Key, out Product product))
                 {
                     if (product.DiscountCount > 0 && item.Value >= product.DiscountCount)
                     {
-                        result += product.DiscountPrice;
-                        result += (item.Value - product.DiscountCount) * product.Price;
+                        var quotient = Math.DivRem(item.Value, product.DiscountCount, out var remainder);
+
+                        costingUsingDiscount += remainder * product.Price;
+                        costingPurchase += quotient * product.DiscountCount + remainder * product.Price;
+
+                        //result += (item.Value / product.DiscountCount)* product.DiscountPrice;
+                        //result += (item.Value % product.DiscountCount) * product.Price;
                     }
                     else
                     {
-                        resultWithoutDiscounts += product.Price;
-                        result += item.Value * product.Price;
+                        costingUsingDiscount += item.Value * product.Price;
+                        costingPurchase += item.Value * product.Price;
                     }
                 }
             }
-            //dCard.Amount += resultWithoutDiscounts;    // Payment(resultWithoutDiscounts);             // - сума інкрементуюча на дисконтну картку ПІСЛЯ сплати
-            return result;// * (1 - dcard.DiscountPercent / 100);                                         // - сумма до сплати
-        }
+            totalSumDiscountCard += costingUsingDiscount;           // Math.Round(result * (1 - (double)discountPercent / 100), 2);
+            //cardsLoader.Save();
 
-        public void Payment(double amount)
-        {
-            //var amountToPay = CalculateTotal();
-            //    dcard.Amount += amount;
-            //~customer 
-        }
+            return Math.Round(costingPurchase * (1 - (double)discountPercent / 100), 2);
+        }   
     }
 }

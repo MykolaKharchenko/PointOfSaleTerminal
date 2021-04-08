@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PointOfSaleTerminal.Interfaces
 {
-    internal interface IProductsLoader
+    public interface IProductsLoader
     {
         Dictionary<string, Product> LoadProducts(string sourceName);
     }

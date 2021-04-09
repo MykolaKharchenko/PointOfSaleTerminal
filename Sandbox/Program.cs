@@ -31,9 +31,10 @@ namespace Sandbox
 
             terminal.ScanDiscountCard("1");                         //  scaning ДисконтКарты by id
 
-            for (int i = 0; i < 31; i++)
+            for (int i = 0; i < 30; i++)
                 terminal.Scan("A");
             terminal.Scan("B");
+            terminal.Scan("C");
 
             var amountPurchase = terminal.CalculateTotal();       // подсчет СуммыТекущейПокупки
             Console.WriteLine(amountPurchase);                    // вывод  для себя: суммы покупки

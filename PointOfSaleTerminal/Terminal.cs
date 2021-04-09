@@ -49,20 +49,17 @@ namespace PointOfSaleTerminal
 
         public double CalculateTotal()
         {
+            double costingPurchase = 0;
             int discountPercent = new DiscountRanges().GetDiscount(dCard);
-
-            double costingByCardDiscount = 0;
-            double costingByVolumeDiscount = 0;
 
             foreach (var item in order)
             {
                 if (products.GetProduct(item.Key, out var product))
                 {
-                    costingByVolumeDiscount += CostingByVolumeDiscount(product, item.Value);
-                    costingByCardDiscount += CostingByCardDiscount(product, item.Value, discountPercent);
+                    costingPurchase += ProductCostingByVolumeDiscount(product, item.Value);
+                    costingPurchase += ProductCostingByCardDiscount(product, item.Value, discountPercent);
                 }
             }
-            var costingPurchase = costingByVolumeDiscount + costingByCardDiscount;
 
             dCard.TotalSum += costingPurchase;  // а шо если челик без ДискКарты?
             cardsLoader.Save(dCard);
@@ -70,78 +67,32 @@ namespace PointOfSaleTerminal
             return costingPurchase;
         }
 
-        private double CostingByVolumeDiscount(Product _product, int _itemVolume)
+        private double ProductCostingByVolumeDiscount(Product _product, int _productVolume)
         {
-            double _costingByVolumeDiscount = 0;
+            double productCosting = 0;
 
-            if (_product.DiscountCount > 0 && _itemVolume >= _product.DiscountCount)
+            if (_product.DiscountCount > 0 && _productVolume >= _product.DiscountCount)
             {
-                _costingByVolumeDiscount = (_itemVolume / _product.DiscountCount) * _product.DiscountPrice;
+                productCosting = (_productVolume / _product.DiscountCount) * _product.DiscountPrice;
             }
-
-            return _costingByVolumeDiscount;
+            return productCosting;
         }
 
-        private double CostingByCardDiscount(Product _product, int _itemVolume, int _dPercent)
+        private double ProductCostingByCardDiscount(Product _product, int _productVolume, int _dPercent)
         {
-            double _costingForCardDiscount = 0;
+            double productCostingWithoutDiscount = 0;
 
-            if (_product.DiscountCount > 0 && (_itemVolume % _product.DiscountCount != 0))
+            if (_product.DiscountCount > 0)
             {
-                var productVolumeForDiscount = Math.DivRem(_itemVolume, _product.DiscountCount, out var productVolumeWithoutDiscount);
-
-                _costingForCardDiscount += productVolumeWithoutDiscount * _product.Price;
+                productCostingWithoutDiscount += (_productVolume % _product.DiscountCount) * _product.Price;
             }
             else
             {
-                _costingForCardDiscount += _itemVolume * _product.Price;
+                productCostingWithoutDiscount += _productVolume * _product.Price;
             }
 
-            var costingByCardDiscount = Math.Round(_costingForCardDiscount * (1 - (double)_dPercent / 100), 2, MidpointRounding.AwayFromZero);
-
-            return costingByCardDiscount;
+            var productCosting = Math.Round(productCostingWithoutDiscount * (1 - (double)_dPercent / 100), 2, MidpointRounding.AwayFromZero);
+            return productCosting;
         }
-
-        //private double CostingByVolumeDiscount2(Dictionary<string, int> _order)
-        //{
-        //    double costingByVolumeDiscount = 0;
-
-        //    foreach (var item in _order)
-        //    {
-        //        if (products.GetProduct(item.Key, out var product))
-        //        {
-        //            if (product.DiscountCount > 0 && item.Value >= product.DiscountCount)
-        //            {
-        //                costingByVolumeDiscount = (item.Value / product.DiscountCount) * product.DiscountPrice;
-        //            }
-        //        }
-        //    }
-        //    return costingByVolumeDiscount;
-        //}
-
-        //private double CostingByCardDiscount2(Dictionary<string, Product> _order, int _dPercent)
-        //{
-        //    double costingForCardDiscount = 0;
-
-        //    foreach (var item in order)
-        //    {
-        //        if (products.GetProduct(item.Key, out var product))
-        //        {
-        //            if (product.DiscountCount > 0 && (item.Value % product.DiscountCount !=0))
-        //            {
-        //                var productVolumeForDiscount = Math.DivRem(item.Value, product.DiscountCount, out var productVolumeWithoutDiscount);
-
-        //                costingForCardDiscount += productVolumeWithoutDiscount * product.Price;
-        //            }
-        //            else
-        //            {
-        //                costingForCardDiscount += item.Value * product.Price;
-        //            }
-        //        }
-        //    }
-        //    var costingByCardDiscount = Math.Round(costingForCardDiscount * (1 - (double)_dPercent / 100), 2, MidpointRounding.AwayFromZero);
-
-        //    return 0;
-        //}
     }
 }

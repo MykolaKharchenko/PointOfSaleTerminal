@@ -16,12 +16,12 @@ namespace PointOfSaleTerminal.Loaders
             new DiscountCard{  CardId = "7", TotalSum = 60000 },
         };
 
-        public double GetCard(string id)
+        public DiscountCard GetCard(string id)
         {
-            return dCardsList.FirstOrDefault(card => card.CardId == id).TotalSum;
+            return dCardsList.FirstOrDefault(card => card.CardId == id);
         }
 
-        public void SaveData(double totalSum)
+        public void Save(DiscountCard card)
         {
             // inplement saving changes in file
         }

@@ -20,10 +20,20 @@ namespace PointOfSaleTerminal.Loaders
             return JsonConvert.DeserializeObject<DiscountCard>(cardsJson).TotalSum;
         }
 
+        public void Save(DiscountCard card)
+        {
+            throw new NotImplementedException();
+        }
+
         public void SaveData( double totalSum)
         {
             using (FileStream filesttream = new FileStream(pathToFile, FileMode.Create))
                 formatter.Serialize(filesttream, totalSum);
+        }
+
+        DiscountCard ICardLoader.GetCard(string id)
+        {
+            throw new NotImplementedException();
         }
 
         /*

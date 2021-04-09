@@ -1,4 +1,4 @@
-﻿using System;
+﻿using PointOfSaleTerminal.DataModels;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -17,11 +17,11 @@ namespace PointOfSaleTerminal
                 { 7 , ulong.MaxValue},
             };
 
-        public int GetDiscount(double totalSum)
+        public int GetDiscount(DiscountCard dCard)
         {
             foreach (var rank in discountRanges)
             {
-                if (totalSum <= rank.Value)
+                if (dCard.TotalSum <= rank.Value)
                 {
                     return rank.Key;
                 }

@@ -56,8 +56,8 @@ namespace PointOfSaleTerminal
             {
                 if (products.GetProduct(item.Key, out var product))
                 {
-                    costingPurchase += ProductCostingByVolumeDiscount(product, item.Value);
-                    costingPurchase += ProductCostingByCardDiscount(product, item.Value, discountPercent);
+                    costingPurchase += ByVolumeDiscount(product, item.Value);
+                    costingPurchase += ByCardDiscount(product, item.Value, discountPercent);
                 }
             }
 
@@ -67,32 +67,31 @@ namespace PointOfSaleTerminal
             return costingPurchase;
         }
 
-        private double ProductCostingByVolumeDiscount(Product _product, int _productVolume)
+        private double ByVolumeDiscount(Product product, int productVolume)
         {
             double productCosting = 0;
 
-            if (_product.DiscountCount > 0 && _productVolume >= _product.DiscountCount)
+            if (product.DiscountCount > 0 && productVolume >= product.DiscountCount)
             {
-                productCosting = (_productVolume / _product.DiscountCount) * _product.DiscountPrice;
+                productCosting = (productVolume / product.DiscountCount) * product.DiscountPrice;
             }
             return productCosting;
         }
 
-        private double ProductCostingByCardDiscount(Product _product, int _productVolume, int _dPercent)
+        private double ByCardDiscount(Product product, int productVolume, int dPercent)
         {
-            double productCostingWithoutDiscount = 0;
+            double productCosting = 0;
 
-            if (_product.DiscountCount > 0)
+            if (product.DiscountCount > 0)
             {
-                productCostingWithoutDiscount += (_productVolume % _product.DiscountCount) * _product.Price;
+                productCosting += (productVolume % product.DiscountCount) * product.Price;
             }
             else
             {
-                productCostingWithoutDiscount += _productVolume * _product.Price;
+                productCosting += productVolume * product.Price;
             }
-
-            var productCosting = Math.Round(productCostingWithoutDiscount * (1 - (double)_dPercent / 100), 2, MidpointRounding.AwayFromZero);
-            return productCosting;
+            return productCosting = Math.Round(productCosting * (1 - (double)dPercent / 100), 2, MidpointRounding.AwayFromZero);
+          //  return productCosting;
         }
     }
 }

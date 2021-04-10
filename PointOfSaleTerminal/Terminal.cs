@@ -13,8 +13,8 @@ namespace PointOfSaleTerminal
     {
         ICardLoader cardsLoader;
         DiscountCard dCard;
-        internal Dictionary<string, int> order = new Dictionary<string, int>();
         Products products;
+        internal Dictionary<string, int> order = new Dictionary<string, int>();
 
         public void SetPricing(string source)
         {
@@ -56,42 +56,43 @@ namespace PointOfSaleTerminal
             {
                 if (products.GetProduct(item.Key, out var product))
                 {
-                    costingPurchase += ByVolumeDiscount(product, item.Value);
-                    costingPurchase += ByCardDiscount(product, item.Value, discountPercent);
+                    costingPurchase += VolumeDiscount(product, item.Value, out var remainder);
+                    costingPurchase += CardDiscount(product, item.Value, discountPercent, remainder);
                 }
             }
-
-            dCard.TotalSum += costingPurchase;  // а шо если челик без ДискКарты?
+            dCard.TotalSum += costingPurchase;
             cardsLoader.Save(dCard);
 
             return costingPurchase;
         }
 
-        private double ByVolumeDiscount(Product product, int productVolume)
+        private double VolumeDiscount(Product product, int volume, out int remainder)
         {
-            double productCosting = 0;
+            double total = 0;
+            remainder = 0;
 
-            if (product.DiscountCount > 0 && productVolume >= product.DiscountCount)
+            if (product.DiscountCount > 0 && volume >= product.DiscountCount)
             {
-                productCosting = (productVolume / product.DiscountCount) * product.DiscountPrice;
+                var volumeGroup = Math.DivRem(volume, product.DiscountCount, out remainder);
+                total = volumeGroup* product.DiscountPrice;
             }
-            return productCosting;
+            return total;
         }
 
-        private double ByCardDiscount(Product product, int productVolume, int dPercent)
+        private double CardDiscount(Product product, int volume, int dPercent, int remainder)
         {
-            double productCosting = 0;
+            double total = 0;
 
-            if (product.DiscountCount > 0)
+            if (remainder > 0)
             {
-                productCosting += (productVolume % product.DiscountCount) * product.Price;
+                volume = remainder;
             }
-            else
-            {
-                productCosting += productVolume * product.Price;
-            }
-            return productCosting = Math.Round(productCosting * (1 - (double)dPercent / 100), 2, MidpointRounding.AwayFromZero);
-          //  return productCosting;
+            total += volume * product.Price;
+
+            //  total += remainder>0 ? remainder * product.Price: volume * product.Price;  -- variant №2
+
+            total = Math.Round(total * (1 - (double)dPercent / 100), 2, MidpointRounding.AwayFromZero);
+            return total;
         }
     }
 }

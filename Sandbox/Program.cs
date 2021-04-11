@@ -11,12 +11,16 @@ namespace Sandbox
             ITerminal terminal = new Terminal();
             terminal.SetPricing("Products.json");
 
-            terminal.ScanDiscountCard("0");
+            terminal.ScanDiscountCard("7");
 
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 32; i++)
                 terminal.Scan("A");
-            terminal.Scan("B");
-            terminal.Scan("C");
+            for (int i = 0; i < 12; i++)
+                terminal.Scan("B");
+            for (int i = 0; i < 30; i++)
+                terminal.Scan("C");
+            for (int i = 0; i < 22; i++)
+                terminal.Scan("D");
 
             var amountPurchase = terminal.CalculateTotal();
             Console.WriteLine(amountPurchase);

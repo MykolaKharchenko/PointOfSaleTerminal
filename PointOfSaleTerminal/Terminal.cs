@@ -49,48 +49,42 @@ namespace PointOfSaleTerminal
 
         public double CalculateTotal()
         {
-            double costingPurchase = 0;
+            double total = 0;
             int discountPercent = new DiscountRanges().GetDiscount(dCard);
 
             foreach (var item in order)
             {
                 if (products.GetProduct(item.Key, out var product))
                 {
-                    costingPurchase += VolumeDiscount(product, item.Value, out var remainder);
-                    costingPurchase += CardDiscount(product, item.Value, discountPercent, remainder);
+                    total += VolumeDiscount(product, item.Value, discountPercent);
                 }
             }
-            dCard.TotalSum += costingPurchase;
+            dCard.TotalSum += total;
             cardsLoader.Save(dCard);
 
-            return costingPurchase;
-        }
-
-        private double VolumeDiscount(Product product, int volume, out int remainder)
-        {
-            double total = 0;
-            remainder = 0;
-
-            if (product.DiscountCount > 0 && volume >= product.DiscountCount)
-            {
-                var volumeGroup = Math.DivRem(volume, product.DiscountCount, out remainder);
-                total = volumeGroup* product.DiscountPrice;
-            }
             return total;
         }
 
-        private double CardDiscount(Product product, int volume, int dPercent, int remainder)
+        private double VolumeDiscount(Product product, int volume, int dPercent)
         {
             double total = 0;
 
-            if (remainder > 0)
+            if (product.DiscountCount > 0 && volume >= product.DiscountCount)
             {
+                var volumeGroup = Math.DivRem(volume, product.DiscountCount, out var remainder);
+                total += volumeGroup * product.DiscountPrice;
                 volume = remainder;
             }
-            total += volume * product.Price;
+            total += CardDiscount(volume, product.Price, dPercent);
 
-            //  total += remainder>0 ? remainder * product.Price: volume * product.Price;  -- variant №2
+            return total;
+        }
 
+        private double CardDiscount(int volume, double price, int dPercent)
+        {
+            double total = 0;
+
+            total += volume * price;
             total = Math.Round(total * (1 - (double)dPercent / 100), 2, MidpointRounding.AwayFromZero);
             return total;
         }

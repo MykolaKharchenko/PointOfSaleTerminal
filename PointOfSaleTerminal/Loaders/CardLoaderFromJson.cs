@@ -4,57 +4,56 @@ using PointOfSaleTerminal.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Xml.Serialization;
+using System.Linq;
 
 namespace PointOfSaleTerminal.Loaders
 {
     class CardLoaderFromJson : ICardLoader
     {
-        public string pathToFile = $"{Environment.ExpandEnvironmentVariables("%UserProfile%")}\\Cards.xml";
-        XmlSerializer formatter = new XmlSerializer(typeof(int));
+        private List<DiscountCard> cardsList = new List<DiscountCard>();
+        public string pathToFile = $"{Environment.ExpandEnvironmentVariables("%UserProfile%")}\\Cards.json";
 
-        public double GetCard(string id)
+        public DiscountCard CreateCard()            // Create
         {
-            var cardsJson = File.ReadAllText(pathToFile);
-            return JsonConvert.DeserializeObject<DiscountCard>(cardsJson).TotalSum;
+            return new DiscountCard() { TotalSum = 0, CardId = "234324" };  // must use Guid
         }
 
-        public void Save(DiscountCard card)
+        public DiscountCard GetCard(string id)        //   Read
         {
-            throw new NotImplementedException();
+            if (id == "")
+            {
+                return CreateCard();
+            }
+            else
+            {
+                var cardsJson = File.ReadAllText(pathToFile);
+                cardsList = JsonConvert.DeserializeObject<List<DiscountCard>>(cardsJson);
+
+                return cardsList.FirstOrDefault(card => card.CardId == id);
+            }
         }
 
-        public void SaveData( double totalSum)
+        public void SaveCard(DiscountCard card)        //  Udpate
         {
-            using (FileStream filesttream = new FileStream(pathToFile, FileMode.Create))
-                formatter.Serialize(filesttream, totalSum);
+            cardsList[cardsList.FindIndex(i => i.CardId == card.CardId)] = card;
+            SaveChanges();
         }
 
-        DiscountCard ICardLoader.GetCard(string id)
+        public void RemoveCard(string id)        // Delete
         {
-            throw new NotImplementedException();
+            cardsList.Remove(cardsList.FirstOrDefault(card => card.CardId == id));
+            SaveChanges();
         }
 
-        /*
-               public string pathToFile = $"{Environment.ExpandEnvironmentVariables("%UserProfile%")}\\PersonsDB.xml";
-
-        XmlSerializer formatter = new XmlSerializer(typeof(ObservableCollection<Person>));
-
-        public ObservableCollection<Person> Open()
+        private void SaveChanges()
         {
-            if (!File.Exists(pathToFile))
-                Save(new ObservableCollection<Person>());
+            //File.WriteAllText(pathToFile, JsonConvert.SerializeObject(cardsList));
 
-            using (FileStream fileStream = new FileStream(pathToFile, FileMode.Open))
-                return (ObservableCollection<Person>)formatter.Deserialize(fileStream);
+            using (StreamWriter file = File.CreateText(pathToFile))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, cardsList);
+            }
         }
-
-        public void Save(ObservableCollection<Person> _persons)
-        {
-            using (FileStream filesttream = new FileStream(pathToFile, FileMode.Create))
-                formatter.Serialize(filesttream, _persons);
-        }
-        */
     }
 }

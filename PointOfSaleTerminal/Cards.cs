@@ -6,13 +6,13 @@ using System.Text;
 
 namespace PointOfSaleTerminal
 {
-    public class Cards
-    {
-        private List<DiscountCard> dCards = new List<DiscountCard>();
+    //public class Cards
+    //{
+    //    private List<DiscountCard> dCards = new List<DiscountCard>();
 
-        public DiscountCard GetCard(string cardId)
-        {
-            return dCards.FirstOrDefault(card=> card.CardId == cardId);
-        }
-    }
+    //    public DiscountCard GetCard(string cardId)
+    //    {
+    //        return dCards.FirstOrDefault(card=> card.CardId == cardId);
+    //    }
+    //}
 }

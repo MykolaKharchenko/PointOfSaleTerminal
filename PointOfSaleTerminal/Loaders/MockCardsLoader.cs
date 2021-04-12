@@ -21,9 +21,8 @@ namespace PointOfSaleTerminal.Loaders
             return dCardsList.FirstOrDefault(card => card.CardId == id);
         }
 
-        public void Save(DiscountCard card)
+        public void SaveCard(DiscountCard card)
         {
-            // inplement saving changes in file
         }
     }
 }

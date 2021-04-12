@@ -1,4 +1,5 @@
 ﻿using PointOfSaleTerminal.DataModels;
+using PointOfSaleTerminal.Interfaces;
 using PointOfSaleTerminal.Loaders;
 using System.Collections.Generic;
 
@@ -10,7 +11,7 @@ namespace PointOfSaleTerminal
 
         public Products(string source)
         {
-            var productsLoader = new ProductLoaderFromJson();
+            IProductsLoader productsLoader = new ProductLoaderFromJson();
             products = productsLoader.LoadProducts(source);
         }
 

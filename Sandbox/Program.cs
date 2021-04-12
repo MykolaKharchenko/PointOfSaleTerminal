@@ -11,7 +11,7 @@ namespace Sandbox
             ITerminal terminal = new Terminal();
             terminal.SetPricing("Products.json");
 
-            terminal.ScanDiscountCard("1");
+            terminal.ScanDiscountCard("sdfds");
             //var data = new string[] { "A", "B", "C", "C", "C", "D", "D", "D", "D", "A", "D" };
             //for (int i = 0; i < data.Length ; i++)
             //    terminal.Scan(data[i]);

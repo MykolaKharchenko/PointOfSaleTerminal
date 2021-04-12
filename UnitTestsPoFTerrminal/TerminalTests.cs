@@ -18,6 +18,13 @@ namespace UnitTestsPoFTerminal
         }
 
         [DataTestMethod]
+        [DataRow]
+        public void Test()
+        {
+            
+        }
+
+        [DataTestMethod]
         [DataRow (110, 1)]
         [DataRow (150, 3)]
         [DataRow (850, 5)]

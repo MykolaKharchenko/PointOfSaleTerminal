@@ -23,8 +23,7 @@ namespace PointOfSaleTerminal
 
         public void ScanDiscountCard(string cardId)
         {
-            //cardsLoader = new MockCardsLoader();
-            cardsLoader = new CardLoaderFromJson();
+            cardsLoader = new MockCardsLoader();
             dCard = cardsLoader.GetCard(cardId);
         }
 
@@ -68,14 +67,15 @@ namespace PointOfSaleTerminal
         private double VolumeDiscount(Product product, int volume, int dPercent)
         {
             double total = 0;
+            int volumeToCardDiscount = volume;
 
             if (product.DiscountCount > 0 && volume >= product.DiscountCount)
             {
                 var volumeGroup = Math.DivRem(volume, product.DiscountCount, out var remainder);
                 total += volumeGroup * product.DiscountPrice;
-                volume = remainder;
+                volumeToCardDiscount = remainder;
             }
-            total += CardDiscount(volume, product.Price, dPercent);
+            total += CardDiscount(volumeToCardDiscount, product.Price, dPercent);
 
             return total;
         }
@@ -85,7 +85,7 @@ namespace PointOfSaleTerminal
             double total = 0;
 
             total += volume * price;
-            total = total * (1 - (double)dPercent / 100);
+            total *= (1 - (double)dPercent / 100);
             total = Math.Round(total, 2, MidpointRounding.AwayFromZero);
             return total;
         }

@@ -46,23 +46,21 @@ namespace PointOfSaleTerminal
             }
         }
 
-        public double CalculateTotal()
-        {
-            double total = 0;
-            int discountPercent = new DiscountRanges().GetDiscount(dCard);
-
-            foreach (var item in order)
+            public double CalculateTotal()
             {
-                if (products.GetProduct(item.Key, out var product))
-                {
-                    total += VolumeDiscount(product, item.Value, discountPercent);
-                }
-            }
-            Math.Round(dCard.TotalSum += total,2);
-            cardsLoader.SaveCard(dCard);
+                double total = 0;
+                int discountPercent = new DiscountRanges().GetDiscount(dCard);
 
-            return Math.Round(total, 2);
-        }
+                foreach (var item in order)
+                {
+                    if (products.GetProduct(item.Key, out var product))
+                    {
+                        total += VolumeDiscount(product, item.Value, discountPercent);
+                    }
+                }
+                cardsLoader.SaveCard(dCard, total);
+                return Math.Round(total, 2);
+            }
 
         private double VolumeDiscount(Product product, int volume, int dPercent)
         {

@@ -18,16 +18,14 @@ namespace PointOfSaleTerminal.Loaders
 
         public DiscountCard GetCard(string id)
         {
-            var card = dCardsList.FirstOrDefault(card => card.CardId == id);
-            if (card == null)
-            {
-                card = dCardsList[0];
-            }
-            return card;
+            return dCardsList.FirstOrDefault(card => card.CardId == id);
         }
 
-        public void SaveCard(DiscountCard card)
+        public void SaveCard(DiscountCard card, double sum)
         {
+            //var s1 = card?.TotalSum ;
+            if (card != null)
+            card.TotalSum += sum;
         }
     }
 }

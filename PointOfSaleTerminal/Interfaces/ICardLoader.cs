@@ -5,6 +5,6 @@ namespace PointOfSaleTerminal.Interfaces
     public interface ICardLoader
     {
         DiscountCard GetCard(string id);
-        void SaveCard(DiscountCard card);
+        void SaveCard(DiscountCard card , double sum);
     }
 }

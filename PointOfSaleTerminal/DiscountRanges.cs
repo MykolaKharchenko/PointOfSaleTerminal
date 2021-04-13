@@ -21,7 +21,7 @@ namespace PointOfSaleTerminal
         {
             foreach (var rank in discountRanges)
             {
-                if (dCard.TotalSum <= rank.Value)
+                if (dCard?.TotalSum <= rank.Value)
                 {
                     return rank.Key;
                 }

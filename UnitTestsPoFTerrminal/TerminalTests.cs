@@ -18,34 +18,6 @@ namespace UnitTestsPoFTerminal
         }
 
         [DataTestMethod]
-        [DataRow]
-        public void Test()
-        {
-            
-        }
-
-        [DataTestMethod]
-        [DataRow (110, 1)]
-        [DataRow (150, 3)]
-        [DataRow (850, 5)]
-        [DataRow (2200, 7)]
-        public void TestRaisingCardDiscount(int arrSize, int expectedPercent)
-        {
-            //  Arrange
-            for (int i = 0; i < arrSize; i++)
-            {
-                terminal.Scan("B");
-            }
-
-            //  Act
-            terminal.CalculateTotal();
-            int resultPercent = new DiscountRanges().GetDiscount(terminal.dCard);
-
-            //  Assert
-            Assert.AreEqual(expectedPercent, resultPercent);
-        }
-
-        [DataTestMethod]
         [DataRow("Not found1")]
         [DataRow("Not found2")]
         public void TestNotFoundProduct(string inputData)
@@ -98,7 +70,6 @@ namespace UnitTestsPoFTerminal
         [DataRow(new string[] { "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C" }, 10)]
         [DataRow(new string[] { "A", "A", "A", "C", "C", "C", "C", "C", "C" }, 8)]
         [DataRow(new string[] { "A", "A", "A", "B", "B", "B", "B", "C", "C", "C", "C", "C", "C", "D", "D", "D", "D" }, 27.8)]
-
         public void TestCalculation(string[] inputData, double expectedResult)
         {
             // Arrange

@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleToAttribute("UnitTestsPoFTerminal")]
-
 namespace PointOfSaleTerminal
 {
     public class DiscountRanges
     {
-        public Dictionary<int, ulong> discountRanges = new Dictionary<int, ulong>
+        private Dictionary<int, ulong> discountRanges = new Dictionary<int, ulong>
             {
                 { 0 , 999},
                 { 1 , 1999},

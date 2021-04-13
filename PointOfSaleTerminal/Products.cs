@@ -11,7 +11,7 @@ namespace PointOfSaleTerminal
 
         public Products(string source)
         {
-            IProductsLoader productsLoader = new ProductLoaderFromJson();
+            IProductsLoader productsLoader = new MockProductsLoader();
             products = productsLoader.LoadProducts(source);
         }
 

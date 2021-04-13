@@ -2,6 +2,7 @@
 using PointOfSaleTerminal.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace PointOfSaleTerminal.Loaders
 {
@@ -21,11 +22,12 @@ namespace PointOfSaleTerminal.Loaders
             return dCardsList.FirstOrDefault(card => card.CardId == id);
         }
 
-        public void SaveCard(DiscountCard card, double sum)
+        public void UpdateCard(DiscountCard card, double sum)
         {
-            //var s1 = card?.TotalSum ;
             if (card != null)
-            card.TotalSum += sum;
+            {
+                dCardsList[dCardsList.IndexOf(card)].TotalSum += sum;
+            }
         }
     }
 }

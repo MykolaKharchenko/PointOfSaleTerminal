@@ -1,7 +1,9 @@
 ﻿using PointOfSaleTerminal.DataModels;
 using PointOfSaleTerminal.Interfaces;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleToAttribute("UnitTestsPoFTerminal")]
 namespace PointOfSaleTerminal.Loaders
 {
     internal class MockProductsLoader : IProductsLoader

@@ -18,7 +18,7 @@ namespace PointOfSaleTerminal
 
         public void SetPricing(string source)
         {
-            products = new Products(source);
+            products = new Products(null);
         }
 
         public void ScanDiscountCard(string cardId)

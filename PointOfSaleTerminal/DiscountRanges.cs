@@ -1,6 +1,5 @@
 ﻿using PointOfSaleTerminal.DataModels;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace PointOfSaleTerminal
 {

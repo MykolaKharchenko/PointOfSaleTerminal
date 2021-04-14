@@ -11,19 +11,18 @@ namespace PointOfSaleTerminal
 {
     public class Terminal : ITerminal
     {
-        private ICardLoader cardsLoader;
+        private ICardLoader cardsLoader = new MockCardsLoader();
         private Products products;
         internal DiscountCard dCard;
         internal Dictionary<string, int> order = new Dictionary<string, int>();
 
         public void SetPricing(string source)
         {
-            products = new Products(null);
+            products = new Products(source);
         }
 
         public void ScanDiscountCard(string cardId)
         {
-            cardsLoader = new MockCardsLoader();
             dCard = cardsLoader.GetCard(cardId);
         }
 
@@ -55,8 +54,8 @@ namespace PointOfSaleTerminal
             {
                 if (products.GetProduct(item.Key, out var product))
                 {
-                    total += VolumeDiscount(product, item.Value, out var volume);
-                    total += CardDiscount(volume, product.Price, discountPercent);
+                    total += VolumeDiscount(product, item.Value, out var productToCardDiscount);
+                    total += CardDiscount(productToCardDiscount, product.Price, discountPercent);
                 }
             }
             total = Math.Round(total, 2, MidpointRounding.AwayFromZero);

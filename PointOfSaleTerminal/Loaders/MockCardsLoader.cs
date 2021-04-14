@@ -25,7 +25,7 @@ namespace PointOfSaleTerminal.Loaders
         {
             if (card != null)
             {
-                dCardsList[dCardsList.IndexOf(card)].TotalSum += sum;
+                card.TotalSum += sum;
             }
         }
     }

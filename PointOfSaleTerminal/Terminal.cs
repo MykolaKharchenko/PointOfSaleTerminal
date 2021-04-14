@@ -55,18 +55,20 @@ namespace PointOfSaleTerminal
             {
                 if (products.GetProduct(item.Key, out var product))
                 {
-                    total += VolumeDiscount(product, item.Value, discountPercent);
+                    total += VolumeDiscount(product, item.Value, out var volume);
+                    total += CardDiscount(volume, product.Price, discountPercent);
                 }
             }
-            cardsLoader.UpdateCard(dCard, Math.Round(total, 2));
+            total = Math.Round(total, 2, MidpointRounding.AwayFromZero);
+            cardsLoader.UpdateCard(dCard, total);
 
-            return Math.Round(total, 2);
+            return total;
         }
 
-        private double VolumeDiscount(Product product, int volume, int dPercent)
+        private double VolumeDiscount(Product product, int volume, out int volumeToCardDiscount)
         {
             double total = 0;
-            int volumeToCardDiscount = volume;
+            volumeToCardDiscount = volume;
 
             if (product.DiscountCount > 0 && volume >= product.DiscountCount)
             {
@@ -74,8 +76,6 @@ namespace PointOfSaleTerminal
                 total += volumeGroup * product.DiscountPrice;
                 volumeToCardDiscount = remainder;
             }
-            total += CardDiscount(volumeToCardDiscount, product.Price, dPercent);
-
             return total;
         }
 
@@ -85,7 +85,6 @@ namespace PointOfSaleTerminal
 
             total += volume * price;
             total *= (1 - (double)dPercent / 100);
-            total = Math.Round(total, 2, MidpointRounding.AwayFromZero);
 
             return total;
         }

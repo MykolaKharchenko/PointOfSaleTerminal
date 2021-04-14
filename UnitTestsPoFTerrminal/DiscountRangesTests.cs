@@ -19,19 +19,5 @@ namespace UnitTestsPoFTerminal
             dCard = mCardsLoader.GetCard("1");
         }
 
-        [DataTestMethod]
-        [DataRow(400, 1)]
-        [DataRow(2000, 3)]
-        [DataRow(4000, 5)]
-        [DataRow(9000, 7)]
-        public void RaisingCardDiscountTest(double sum, int expectedPercent)
-        {
-            //  Act
-            mCardsLoader.UpdateCard(dCard, sum);
-            int resultPercent = new DiscountRanges().GetDiscount(dCard);
-
-            //  Assert
-            Assert.AreEqual(expectedPercent, resultPercent);
-        }
     }
 }

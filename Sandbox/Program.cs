@@ -14,11 +14,11 @@ namespace Sandbox
             terminal.SetPricing("string");
             terminal.ScanDiscountCard("1");
 
-            var data = new string[] { "A", "B", "C", "C", "C", "D", "D", "D", "D", "A", "D" };
+            var data = new string[] { "A", "A", "A", "B", "B", "B", "B", "C", "C", "C", "C", "C", "C", "D", "D", "D", "D" };
             for (int i = 0; i < data.Length; i++)
                 terminal.Scan(data[i]);
 
-            //for (int i = 0; i < 32; i++)
+            //for (int i = 0; i < 6; i++)
             //    terminal.Scan("A");
             //for (int i = 0; i < 200; i++)
             //    terminal.Scan("B");

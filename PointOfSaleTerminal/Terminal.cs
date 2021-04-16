@@ -59,7 +59,6 @@ namespace PointOfSaleTerminal
                 }
             }
             total = Math.Round(total, 2, MidpointRounding.AwayFromZero);
-            cardsLoader.UpdateCard(dCard, total);
 
             return total;
         }
@@ -84,6 +83,7 @@ namespace PointOfSaleTerminal
 
             total += volume * price;
             total *= (1 - (double)dPercent / 100);
+            dCard.UpdateCard(dCard, Math.Round(total, 2, MidpointRounding.AwayFromZero));
 
             return total;
         }

@@ -32,7 +32,6 @@ namespace UnitTestsPoFTerminal
             Assert.ThrowsException<System.NullReferenceException>(() => card.TotalSum);
         }
 
-
         [DataTestMethod]
         [DataRow(400, 1)]
         [DataRow(2000, 3)]
@@ -41,7 +40,7 @@ namespace UnitTestsPoFTerminal
         public void RaisingCardDiscountTest(double sum, int expectedPercent)
         {
             //  Act
-            mCardsLoader.UpdateCard(dCard, sum);
+            dCard.UpdateCard(dCard, sum);
             int resultPercent = new DiscountRanges().GetDiscount(dCard);
 
             //  Assert

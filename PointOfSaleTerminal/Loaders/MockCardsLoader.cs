@@ -20,13 +20,5 @@ namespace PointOfSaleTerminal.Loaders
         {
             return dCardsList.FirstOrDefault(card => card.CardId == id);
         }
-
-        public void UpdateCard(DiscountCard card, double sum)
-        {
-            if (card != null)
-            {
-                card.TotalSum += sum;
-            }
-        }
     }
 }
